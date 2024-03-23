@@ -1,6 +1,6 @@
 ## Installation
 
-You will need to [install rust](https://www.rust-lang.org/tools/install) and cargo to run this project. You can do so by following the instructions .
+You will need to install rust and cargo to run this cli. You can do so by following the instructions [here](https://www.rust-lang.org/tools/install).
 
 ```bash
 cargo install eas-env
