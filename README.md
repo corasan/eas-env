@@ -3,7 +3,7 @@
 You will need to [install rust](https://www.rust-lang.org/tools/install) and cargo to run this project. You can do so by following the instructions .
 
 ```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+cargo install eas-env
 ```
 
 ## Usage
