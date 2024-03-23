@@ -1,0 +1,6 @@
+{
+  "editor.defaultFormatter": "rust-lang.rust-analyzer",
+  "editor.tabSize": 2,
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true
+}
