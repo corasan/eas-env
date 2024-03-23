@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Henry Paulino <me@henrypl.com>"]
 description = "A simple CLI tool to manage environment variables for Expo projects."
+license = "MIT"
+readme = "README.md"
+keywords = ["eas", "expo", "expo-cli", "eas-cli", "react-native"]
+repository = "https://github.com/corasan/eas-env"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
