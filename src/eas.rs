@@ -5,15 +5,20 @@ use log::{info, error};
 use env_logger::Builder;
 use log::LevelFilter;
 use colored::*;
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    /// Name of the EAS profile to use
+    #[arg(short, long, default_value = "default")]
+    profile: String,
+}
 
 pub fn create_env() {
   init_logger();
-  let args = env::args().collect::<Vec<String>>();
-  if args.len() < 2 {
-    write_to_env("default".to_string());
-    return;
-  }
-  write_to_env(args[1].to_string());
+  let args = Args::parse();
+  write_to_env(args.profile.to_string());
 }
 
 fn init_logger() {
