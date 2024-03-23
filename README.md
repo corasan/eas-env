@@ -12,7 +12,23 @@ By default the program will run in the `default` profile in your `eas.json`. You
 
 ```bash
 eas-env
-// creates .env.local file with the default profile
+# creates .env.local file using default profile
 
-eas-env production
+eas-env -p production
+# creates .env.local file using production profile
+
 ```
+
+To make things easier you can add it to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "env:dev": "eas-env -p development",
+    "env:prod": "eas-env -p production",
+    "env:preview": "eas-env -p preview",
+  }
+}
+```
+
+Then you can run `npm run env` to create the `.env.local` file with the default profile.
