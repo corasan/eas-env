@@ -1,15 +1,40 @@
 use std::{env, fs};
 use std::io::{BufWriter, Write};
 use serde_json::Value;
+use log::{info, error};
+use env_logger::Builder;
+use log::LevelFilter;
+use colored::*;
 
 pub fn create_env() {
+  init_logger();
   let args = env::args().collect::<Vec<String>>();
   if args.len() < 2 {
     write_to_env("default".to_string());
     return;
   }
   write_to_env(args[1].to_string());
-  print!("Done ✅\n")
+}
+
+fn init_logger() {
+  Builder::new()
+		.format(|buf, record| {
+			let level = record.level();
+			writeln!(
+				buf,
+				"[{}] - {}",
+				match level {
+          log::Level::Error => level.to_string().red(),
+          log::Level::Warn => level.to_string().yellow(),
+          log::Level::Info => level.to_string().green(),
+          log::Level::Debug => level.to_string().purple(),
+          log::Level::Trace => level.to_string().cyan(),
+				},
+				record.args()
+			)
+		})
+		.filter(None, LevelFilter::max())
+		.init();
 }
 
 fn write_to_env(profile: String) {
@@ -18,21 +43,22 @@ fn write_to_env(profile: String) {
   let env = match eas["build"][profile]["env"].as_object() {
       Some(env) => env,
       None => {
-          eprintln!("Error: 'env' field not found");
+          error!("'env' field not found");
           std::process::exit(1);
       }
   };
   if env.is_empty() {
-      eprintln!("Error: 'env' field has no keys");
+      error!("'env' field has no keys");
       std::process::exit(1);
   }
   let dir = get_dir();
   let file = fs::File::create(format!("{}/.env.local", dir)).expect("Error creating .env file");
-  println!("[LOG] Creating .env.local with profile: {}", p);
+  
   let mut file = BufWriter::new(file);
   for (key, value) in env {
       write!(file, "{}={}\n", key, value).expect("Error writing to file");
   }
+  info!("✅ Created .env.local with profile: {}\n", p);
 }
 
 fn read_config() -> Value {
@@ -42,7 +68,7 @@ fn read_config() -> Value {
   let app_json: serde_json::Value = serde_json::from_str(&app_config).unwrap();
   let eas_json: serde_json::Value = serde_json::from_str(&eas).unwrap();
   let app_name = app_json["expo"]["name"].as_str().unwrap().replace("\"", "");
-  println!("[LOG] EAS Configuration found for app: {}", app_name);
+  info!("✅ EAS Configuration found for app: {}", app_name);
   return eas_json;
 }
 
