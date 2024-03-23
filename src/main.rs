@@ -9,7 +9,7 @@ fn main() {
         return;
     }
     write_to_env(args[1].to_string());
-    print!("Done ✅")
+    print!("Done ✅\n")
 }
 
 fn write_to_env(profile: String) {
