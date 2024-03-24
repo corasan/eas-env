@@ -4,6 +4,7 @@ use env_logger::Builder;
 use log::LevelFilter;
 use log::{error, info};
 use std::io::{BufWriter, Write};
+use std::path::PathBuf;
 use std::{env, fs};
 
 #[derive(Parser, Debug)]
@@ -13,19 +14,20 @@ struct Args {
   #[arg(short, long, default_value = "default")]
   profile: String,
 
-  #[arg(long, default_value = "./")]
-  path: String,
+  /// Path to the app directory containing the app.json and eas.json files
+  #[arg(long)]
+  app_dir: Option<PathBuf>,
 }
 
 pub fn create_env() {
   init_logger();
   let args = Args::parse();
   let profile = args.profile;
-  let mut path = args.path;
-  if path.is_empty() {
-    path = get_dir();
+  let mut dir = args.app_dir;
+  if dir.is_none() {
+    dir = Some(env::current_dir().expect("Failed to get current directory"));
   }
-  write_to_env(profile, path);
+  write_to_env(profile, dir.unwrap().to_str().unwrap().to_string());
 }
 
 fn write_to_env(profile: String, path: String) {
@@ -61,14 +63,6 @@ fn get_eas_env(profile: String, path: String) -> serde_json::Map<String, serde_j
     std::process::exit(1);
   }
   return env.clone();
-}
-
-fn get_dir() -> String {
-  let current_dir = env::current_dir().expect("Error getting current directory");
-  let string = current_dir
-    .to_str()
-    .expect("Error converting path to string");
-  return string.to_string();
 }
 
 fn init_logger() {
