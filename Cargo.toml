@@ -1,6 +1,6 @@
 [package]
 name = "eas-env"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Henry Paulino <me@henrypl.com>"]
 description = "A simple CLI tool to manage environment variables for Expo projects."
