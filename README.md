@@ -19,10 +19,10 @@ eas-env -p production
 
 ```
 
-You can also specify the path to the expo directory where the `eas.json` file is located, useful if you have a monorepo. The default path is the current directory.
+You can also specify the path to the app's directory where the `eas.json` file is located, useful if the project is in a monorepo. The default path is the current directory where the command is run.
 
 ```bash
-  eas-env --path apps/mobile
+  eas-env --app-dir apps/mobile
   # creates .env.local file using default profile inside apps/mobile directory
 ```
 
