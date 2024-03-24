@@ -8,7 +8,7 @@ cargo install eas-env
 
 ## Usage
 
-By default the program will run in the `default` profile in your `eas.json`. You can specify a different environment by passing the profile as an argument. Note that this needs to be run in the root of your project.
+By default, the program will use the `default` profile in your `eas.json`. You can specify a different environment by passing the profile as an argument. Note that this needs to be run in the root of your project and you will need to add your environment variables to the EAS profile.
 
 ```bash
 eas-env
