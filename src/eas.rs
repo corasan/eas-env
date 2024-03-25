@@ -4,7 +4,7 @@ use env_logger::Builder;
 use log::LevelFilter;
 use log::{error, info};
 use std::io::{BufWriter, Write};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::{env, fs};
 
 #[derive(Parser, Debug)]
@@ -23,46 +23,68 @@ pub fn create_env() {
   init_logger();
   let args = Args::parse();
   let profile = args.profile;
-  let mut dir = args.app_dir;
-  if dir.is_none() {
-    dir = Some(env::current_dir().expect("Failed to get current directory"));
+  let dir = args
+    .app_dir
+    .unwrap_or_else(|| env::current_dir().expect("Failed to get current directory"));
+  match write_to_env(&profile, &dir) {
+    Ok(_) => info!(
+      "✅ Environment file created successfully using profile: \"{}\".\n",
+      profile
+    ),
+    Err(e) => error!("Failed to create environment file: {}", e),
   }
-  write_to_env(profile, dir.unwrap().to_str().unwrap().to_string());
 }
 
-fn write_to_env(profile: String, path: String) {
-  let p = profile.clone();
-  let eas_env = get_eas_env(profile, path.clone());
-  let file =
-    fs::File::create(format!("{}/.env.local", path.clone())).expect("Error creating .env file");
+fn write_to_env(profile: &str, path: &Path) -> Result<(), Box<dyn std::error::Error>> {
+  let eas_env = get_eas_env(profile, path)?;
+  let file_path = path.join(".env.local");
+  let file = fs::File::create(&file_path)?;
 
   let mut file = BufWriter::new(file);
   for (key, value) in eas_env {
-    write!(file, "{}={}\n", key, value).expect("Error writing to file");
+    writeln!(file, "{}={}", key, value)?;
   }
-  info!("✅ Created .env.local with profile: {}\n", p);
+  Ok(())
 }
 
-fn get_eas_env(profile: String, path: String) -> serde_json::Map<String, serde_json::Value> {
-  let app_config =
-    fs::read_to_string(format!("{}/app.json", path)).expect("Error reading App config");
-  let eas = fs::read_to_string(format!("{}/eas.json", path)).expect("Error reading EAS config");
-  let app_json: serde_json::Value = serde_json::from_str(&app_config).unwrap();
-  let eas_json: serde_json::Value = serde_json::from_str(&eas).unwrap();
-  let app_name = app_json["expo"]["name"].as_str().unwrap().replace("\"", "");
+fn read_and_parse_json(
+  path: &Path,
+  file_name: &str,
+) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+  let file_content = fs::read_to_string(path.join(file_name))?;
+  let json: serde_json::Value = serde_json::from_str(&file_content)?;
+  Ok(json)
+}
+
+fn get_eas_env(
+  profile: &str,
+  path: &Path,
+) -> Result<serde_json::Map<String, serde_json::Value>, Box<dyn std::error::Error>> {
+  let app_json = read_and_parse_json(path, "app.json")?;
+  let eas_json = read_and_parse_json(path, "eas.json")?;
+  let app_name = app_json["expo"]["name"]
+    .as_str()
+    .ok_or("Expected a string")?
+    .replace("\"", "");
   info!("✅ EAS Configuration found for app: {}", app_name);
   let env = match eas_json["build"][profile]["env"].as_object() {
     Some(env) => env,
     None => {
-      error!("'env' field not found");
-      std::process::exit(1);
+      error!("\"env\" field not found");
+      return Err(Box::new(std::io::Error::new(
+        std::io::ErrorKind::InvalidData,
+        "\"env\" field not found",
+      )));
     }
   };
   if env.is_empty() {
-    error!("'env' field has no keys");
-    std::process::exit(1);
+    error!("\"env\" field has no keys");
+    return Err(Box::new(std::io::Error::new(
+      std::io::ErrorKind::InvalidData,
+      "\"env\" field not found",
+    )));
   }
-  return env.clone();
+  Ok(env.clone())
 }
 
 fn init_logger() {
