@@ -12,5 +12,9 @@ chmod +x eas-env
 # Create the target directory if it doesn't exist
 mkdir -p $HOME/.local/bin
 
+
 # Move the binary to a directory in the PATH
 mv eas-env $HOME/.local/bin/
+
+# Add the directory to the PATH
+export PATH="$HOME/.local/bin:$PATH"
