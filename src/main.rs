@@ -8,5 +8,5 @@ mod eas;
 /// eas-env -p production
 /// ```
 fn main() {
-	eas::create_env();
+  eas::create_env();
 }
