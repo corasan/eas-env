@@ -16,5 +16,25 @@ mkdir -p $HOME/.local/bin
 # Move the binary to a directory in the PATH
 mv eas-env $HOME/.local/bin/
 
-# Add the directory to the PATH
-export PATH="$HOME/.local/bin:$PATH"
+# Detect the user's shell
+shell=$(basename "$SHELL")
+
+# Set the shell configuration file based on the detected shell
+if [ "$shell" == "zsh" ]; then
+    shell_config="$HOME/.zshrc"
+elif [ "$shell" == "bash" ]; then
+    shell_config="$HOME/.bashrc"
+else
+    echo "Unsupported shell: $shell"
+    exit 1
+fi
+
+# Check if $HOME/.local/bin is in the PATH
+if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+    # Add $HOME/.local/bin to the PATH
+    echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$shell_config"
+    source "$shell_config"
+    echo "Added $HOME/.local/bin to PATH in $shell_config"
+else
+    echo "$HOME/.local/bin is already in PATH"
+fi
