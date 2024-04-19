@@ -1,10 +1,19 @@
 ## Installation
 
-You will need to install rust and cargo to run this cli. You can do so by following the instructions [here](https://www.rust-lang.org/tools/install).
+### Cargo
 
+You will need to install rust and cargo to run this cli. You can do so by following the instructions [here](https://www.rust-lang.org/tools/install).
 ```bash
 cargo install eas-env
 ```
+
+### CURL
+```bash
+curl -sSL https://raw.githubusercontent.com/corasan/eas-env/main/install.sh | bash
+```
+
+### Releases
+Download the latest release from the [releases](https://github.com/corasan/eas-env/releases) page and add it to your path.
 
 ## Usage
 
