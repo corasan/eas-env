@@ -8,7 +8,7 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: macOS-latest
 
     steps:
     - uses: actions/checkout@master
@@ -17,8 +17,10 @@ jobs:
       with:
         toolchain: stable
         override: true
+    - name: Rustup add target x86_64-apple-darwin
+      run: rustup target add x86_64-apple-darwin
     - name: Build release binary
-      run: cargo build --release
+      run: cargo build --release --target x86_64-apple-darwin
     
     - name: Release
       env:
