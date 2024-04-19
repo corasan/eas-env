@@ -9,5 +9,8 @@ curl -L -o eas-env "https://github.com/corasan/eas-env/releases/download/$latest
 # Make the binary executable
 chmod +x eas-env
 
+# Create the target directory if it doesn't exist
+mkdir -p $HOME/.local/bin
+
 # Move the binary to a directory in the PATH
-sudo mv eas-env /usr/local/bin/
+mv eas-env $HOME/.local/bin/
