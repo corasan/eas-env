@@ -30,4 +30,4 @@ jobs:
         generate_release_notes: true
         make_latest: 'true'
         files: |
-          ./target/release/eas-env
+          ./target/x86_64-apple-darwin/release/eas-env
