@@ -27,5 +27,6 @@ jobs:
       with:
         generate_release_notes: true
         make_latest: 'true'
+        token: ${{ secrets.EAS_ENV_RELEASE_TOKEN }}
         files: |
           ./target/release/eas-env
