@@ -29,12 +29,12 @@ else
     exit 1
 fi
 
-# Check if $HOME/.local/bin is in the PATH
-if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+# Check if the PATH modification line already exists in the shell configuration file
+if grep -qxF 'export PATH="$HOME/.local/bin:$PATH"' "$shell_config"; then
+    echo "PATH modification already exists in $shell_config"
+else
     # Add $HOME/.local/bin to the PATH
     echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$shell_config"
     source "$shell_config"
     echo "Added $HOME/.local/bin to PATH in $shell_config"
-else
-    echo "$HOME/.local/bin is already in PATH"
 fi
