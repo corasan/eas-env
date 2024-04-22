@@ -38,3 +38,5 @@ else
     source "$shell_config"
     echo "Added $HOME/.local/bin to PATH in $shell_config"
 fi
+
+export PATH="$HOME/.local/bin:$PATH"
